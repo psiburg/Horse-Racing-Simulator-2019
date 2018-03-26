@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1045 &1
+EditorBuildSettings:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/0 - Menu.unity
+    guid: b6c10c34692c80a49a79a095fb2e9302
+  - enabled: 1
+    path: Assets/Scenes/1 - Horse Race.unity
+    guid: 0f853a7b4b471494e828a26e1b49a37f
+  - enabled: 1
+    path: Assets/Scenes/2 - Space Introduction.unity
+    guid: 74f933f1dee369f41923b479936ab050
+  - enabled: 1
+    path: Assets/Scenes/3 - Space Level 2.unity
+    guid: 43706a6cd188a3f4eb855285dc824b6d
+  - enabled: 1
+    path: Assets/Scenes/4 - Boss Fight.unity
+    guid: 268bfc2eb1c0bc843bfb3cd4dd514fc8
