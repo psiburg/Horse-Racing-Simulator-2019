@@ -7,21 +7,19 @@ using UnityEngine;
 public class AsteroidManager : MonoBehaviour{
 
     [SerializeField] GameObject[] asteroid;
-    [SerializeField] int asteroidsOnAxisX;
-	[SerializeField] int asteroidsOnAxisY;
-	[SerializeField] int asteroidsOnAxisZ;
-	[SerializeField] int gridSpacing = 400;
+    [SerializeField] int asteroidsOnAxis = 10;
+    [SerializeField] int gridSpacing = 300;
 
     void Start() {
         PlaceAsteroids();
     }
 
     void PlaceAsteroids() {
-        for(int x = 0; x < asteroidsOnAxisX; x++){
+        for(int x = 0; x < asteroidsOnAxis; x++){
 			Debug.Log("x loop");
-            for (int y = 0; y < asteroidsOnAxisY; y++){
+            for (int y = 0; y < asteroidsOnAxis; y++){
 				Debug.Log("y loop");
-				for (int z = 0; z < asteroidsOnAxisZ; z++){
+				for (int z = 0; z < asteroidsOnAxis; z++){
 					Debug.Log("z loop ");
 					InstantiateAsteroid(x, y, z);
                 }

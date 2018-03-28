@@ -14,19 +14,18 @@ public class QuestObjectives : MonoBehaviour {
 	private string[] QuestHeaderList = new string[7];			//quest titles
 	private string[] QuestObjectiveList = new string[7];		//quest text
 	public Transform[] QuestObjective = new Transform[7];		//quest marker (if applicable)
-	private int currentQuest = 4;								//currently active quest
+	private int currentQuest = 0;								//currently active quest
 	private int totalQuests;
 	private int lastFrameQuest = -1;							//compare and update quest text on completion
 	public Text QuestHeaderText;								//quest header text box
 	public Text QuestObjectiveText;								//quest objective text box
 	public RawImage QuestMarkerUI;
 	public Camera cam;
-	private Transform player;
 
 	// Use this for initialization
 	void Start () {
 		Scene level = SceneManager.GetActiveScene();
-		player = GameObject.FindGameObjectWithTag("Player").transform;
+
 		if (level.buildIndex == 1) {
 			//no quests planned for horse race
 		}
@@ -64,39 +63,13 @@ public class QuestObjectives : MonoBehaviour {
 			if (!QuestMarkerUI.gameObject.activeSelf)
 				QuestMarkerUI.gameObject.SetActive(true);
 
-			//float dotProd = Vector3.Dot(Camera.main.transform.forward, QuestObjective[currentQuest].forward);
-			//dotProd = -dotProd;
-			//Debug.Log("dot product: " + dotProd);
-			Vector3 uiPos = cam.WorldToScreenPoint(QuestObjective[currentQuest].position);
 			//move ui marker accordingly
 			if (QuestObjective[currentQuest].GetComponent<Renderer>().isVisible) {
-				QuestMarkerUI.transform.position = new Vector3(uiPos.x, uiPos.y + 20f, 0f);
-				Debug.Log("on screen " + QuestMarkerUI.transform.position);
+				Vector3 temp = cam.WorldToScreenPoint(QuestObjective[currentQuest].position);
+				QuestMarkerUI.transform.position = new Vector3(temp.x, temp.y + 20f, 0f);
 			}
-			//else if (dotProd > 0) {
-			//	Vector3 vectPlayerToTarget = player.position - QuestMarkerUI.transform.position;
-			//	Vector2 flat = Vector3.Project(vectPlayerToTarget, player.forward);
-			//	flat.Normalize();
-			//	Debug.Log(flat.magnitude);
-			//	//QuestMarkerUI.transform.position = new Vector3(temp.x, temp.y + 20f, 0f);
-			//}
 			else {
-				//	Vector3 vectPlayerToTarget = player.position - QuestMarkerUI.transform.position;
-				//	Vector2 flat = Vector3.Project(vectPlayerToTarget, player.forward);
-				//constrain to screen dimensions less 25 px for marker size
-				int screenSizeX = Camera.main.scaledPixelWidth;
-				int screenSizeY = Camera.main.scaledPixelHeight;
-				Debug.Log(screenSizeX + " x " + screenSizeY + " y");
-				uiPos.x = Mathf.Clamp(uiPos.x, 25, screenSizeX - 25);
-				uiPos.y = Mathf.Clamp(uiPos.y, 25, screenSizeY - 25);
-				Debug.Log(QuestMarkerUI.rectTransform.lossyScale);
-				QuestMarkerUI.transform.position = new Vector3(uiPos.x, uiPos.y, 0f);
-				Debug.Log("off screen " + QuestMarkerUI.transform.position);
-
-				//else { //dot prod < 0 (behind me)
-
-				//}
-				//QuestMarkerUI.transform.position = new Vector3(10000f, 10000f, 10000f);
+				QuestMarkerUI.transform.position = new Vector3(10000f, 10000f, 10000f);
 			}
 		}
 		else {
