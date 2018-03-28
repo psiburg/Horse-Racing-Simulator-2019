@@ -67,7 +67,7 @@ public class PlayerHealth: MonoBehaviour {
 
 	void Death() {
 		// Set the death flag so this function won't be called again.
-		isDead = true;
+		if (!isDead) isDead = true;
 
 		// Set the audiosource to play the death clip and play it (this will stop the hurt sound from playing).
 		playerAudio.clip = deathClip;

@@ -7,7 +7,7 @@ using UnityEngine.UI;
 public class UIController : MonoBehaviour {
 
 	public bool UIEnabled;
-	private RectTransform[] allChildren;
+	//private RectTransform[] allChildren;
 	private bool alreadyEnabled;
 	private bool alreadyDisabled;
 	private CanvasGroup UIGroup;
@@ -15,7 +15,7 @@ public class UIController : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		allChildren = GetComponentsInChildren<RectTransform>();
+		//allChildren = GetComponentsInChildren<RectTransform>();
 		UIGroup = GetComponent<CanvasGroup>();
 		UIPowerup = GetComponent<AudioSource>();
 	}
