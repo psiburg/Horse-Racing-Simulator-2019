@@ -22,7 +22,6 @@ public class UIController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		Debug.Log(UIEnabled);
 		if (UIEnabled && !alreadyEnabled) {
 			EnableUI();
 			alreadyDisabled = false;

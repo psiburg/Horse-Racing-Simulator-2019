@@ -27,7 +27,6 @@ public class EnemyMovement : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		SetMoveState();
-		Debug.Log(evasive);
 		debugText.text = Vector3.Distance(target.position, this.transform.position).ToString() + 
 			"\nev: " + evasive + 
 			"\ntarpos: " + target.position + 

@@ -64,34 +64,85 @@ public class QuestObjectives : MonoBehaviour {
 			if (!QuestMarkerUI.gameObject.activeSelf)
 				QuestMarkerUI.gameObject.SetActive(true);
 
-			//float dotProd = Vector3.Dot(Camera.main.transform.forward, QuestObjective[currentQuest].forward);
-			//dotProd = -dotProd;
-			//Debug.Log("dot product: " + dotProd);
-			Vector3 uiPos = cam.WorldToScreenPoint(QuestObjective[currentQuest].position);
+			
+			Vector3 uiSpacePos = cam.WorldToScreenPoint(QuestObjective[currentQuest].position);
+
+			Vector3 vectCamToTarget = (QuestMarkerUI.transform.forward - Camera.main.transform.forward).normalized;
+			float dotProd = Vector2.Dot(vectCamToTarget, Camera.main.transform.position.normalized);
+			Debug.Log("dot product: " + dotProd);
+
+			Transform enemyTemp = QuestMarkerUI.transform;
+			//enemyTemp.rotation = Quaternion.LookRotation(Vector3.forward, Vector3.up);
+			enemyTemp.SetPositionAndRotation(new Vector3(QuestMarkerUI.transform.position.x,
+											QuestMarkerUI.transform.position.y,
+											QuestMarkerUI.transform.position.z),
+											Quaternion.identity);
+			Transform cameraTemp = Camera.main.transform;
+			cameraTemp.SetPositionAndRotation(new Vector3(Camera.main.transform.position.x,
+											 Camera.main.transform.position.y,
+											 Camera.main.transform.position.z),
+											 Quaternion.identity);
+			Vector3 vectCamToTargetNoRotation = enemyTemp.localPosition - cameraTemp.localPosition;
+			Debug.Log(vectCamToTarget + " -> " + vectCamToTargetNoRotation);
 			//move ui marker accordingly
 			if (QuestObjective[currentQuest].GetComponent<Renderer>().isVisible) {
-				QuestMarkerUI.transform.position = new Vector3(uiPos.x, uiPos.y + 20f, 0f);
-				Debug.Log("on screen " + QuestMarkerUI.transform.position);
+				QuestMarkerUI.transform.position = new Vector3(uiSpacePos.x, uiSpacePos.y + 20f, 0f);
+				//Debug.Log("on screen " + QuestMarkerUI.transform.position);
 			}
 			//else if (dotProd > 0) {
-			//	Vector3 vectPlayerToTarget = player.position - QuestMarkerUI.transform.position;
 			//	Vector2 flat = Vector3.Project(vectPlayerToTarget, player.forward);
 			//	flat.Normalize();
 			//	Debug.Log(flat.magnitude);
 			//	//QuestMarkerUI.transform.position = new Vector3(temp.x, temp.y + 20f, 0f);
 			//}
 			else {
+				Debug.Log("cam to target" + vectCamToTarget);
 				//	Vector3 vectPlayerToTarget = player.position - QuestMarkerUI.transform.position;
 				//	Vector2 flat = Vector3.Project(vectPlayerToTarget, player.forward);
 				//constrain to screen dimensions less 25 px for marker size
 				int screenSizeX = Camera.main.scaledPixelWidth;
 				int screenSizeY = Camera.main.scaledPixelHeight;
-				Debug.Log(screenSizeX + " x " + screenSizeY + " y");
-				uiPos.x = Mathf.Clamp(uiPos.x, 25, screenSizeX - 25);
-				uiPos.y = Mathf.Clamp(uiPos.y, 25, screenSizeY - 25);
-				Debug.Log(QuestMarkerUI.rectTransform.lossyScale);
-				QuestMarkerUI.transform.position = new Vector3(uiPos.x, uiPos.y, 0f);
-				Debug.Log("off screen " + QuestMarkerUI.transform.position);
+
+				//get current marker size (scales with screen size so we need lossyscale)
+				int markerSizeX = (int)((float)QuestMarkerUI.gameObject.GetComponent<RectTransform>().rect.width 
+									* QuestMarkerUI.transform.lossyScale.x);
+				int markerSizeY = (int)((float)QuestMarkerUI.gameObject.GetComponent<RectTransform>().rect.height 
+									* QuestMarkerUI.transform.lossyScale.y);
+
+				//min and max screen x values
+				float minX = markerSizeX;
+				float maxX = screenSizeX - markerSizeX;
+
+				//min and max screen y values
+				float minY = markerSizeY;
+				float maxY = screenSizeY - markerSizeY;
+
+				//clamp ui space position to screen dimensions accounting for marker size
+				//uiSpacePos.x = Mathf.Clamp(uiSpacePos.x, minX, maxX);
+				//uiSpacePos.y = Mathf.Clamp(uiSpacePos.y, minY, maxY);
+				//Debug.Log("screen space " + screenSizeX + "x by " + screenSizeY + "y");
+				Debug.Log("marker space " + minX + "-" + maxX + "x " + minY + "-" + maxY + "y");
+				Debug.Log("enemy uiSpacePos " + uiSpacePos);
+				
+				Debug.Log("uiSpPos x = " + uiSpacePos.x + " gets clamped to " + Mathf.Clamp(uiSpacePos.x, minX, maxX));
+				Debug.Log("uiSpPos y = " + uiSpacePos.y + " gets clamped to " + Mathf.Clamp(uiSpacePos.y, minY, maxY));
+				Vector2 onScreenSpace = new Vector2(Mathf.Clamp(uiSpacePos.x, minX, maxX),
+													Mathf.Clamp(uiSpacePos.y, minY, maxY));
+				//Debug.Log("does uispace clamp? " + uiSpacePos); MUST BE DIRECTLY ASSIGNED TO GET CLAMPED
+				Debug.Log("enemy screenSpace preswap " + onScreenSpace);
+				onScreenSpace = new Vector2((maxX - onScreenSpace.x) + minX, (maxY - onScreenSpace.y) + minY);
+				//Mathf.Clamp(onScreenSpace.x, minX, maxX);
+				//Mathf.Clamp(onScreenSpace.y, minY, maxY);
+				Debug.Log("enemy screenSpace postswap " + onScreenSpace);
+				if (vectCamToTarget.z < 0 && //target behind us
+					((uiSpacePos.x > minX || uiSpacePos.x < maxX) ||  //X is neither min nor max
+					 (uiSpacePos.y > minY || uiSpacePos.y < maxY))) { //Y is neither min nor max
+					Debug.Log("snap called - " + onScreenSpace);
+					onScreenSpace = SnapToClosestEdge(onScreenSpace, minX, maxX, minY, maxY);
+				}
+
+				QuestMarkerUI.transform.position = new Vector3(onScreenSpace.x, onScreenSpace.y, 0f);
+				//Debug.Log("off screen " + QuestMarkerUI.transform.position);
 
 				//else { //dot prod < 0 (behind me)
 
@@ -104,6 +155,59 @@ public class QuestObjectives : MonoBehaviour {
 			if (QuestMarkerUI.gameObject.activeSelf)
 				QuestMarkerUI.gameObject.SetActive(false);
 		}
+	}
+
+	private Vector2 SnapToClosestEdge(Vector2 onScreenSpace, float minX, float maxX, float minY, float maxY) {
+		float xLerp = Mathf.InverseLerp(minX, maxX, onScreenSpace.x);
+		float yLerp = Mathf.InverseLerp(minY, maxY, onScreenSpace.y);
+		Debug.Log("x lerp: " + xLerp + "y lerp: " + yLerp);
+		//need 4 special cases: split the screen into quadrants
+		//(0,0) is the bottom left of the screen
+		if (xLerp < 0.5f && yLerp < 0.5f) { //quadrant one bottom left
+			Debug.Log("x and y bottom left");
+			if (xLerp < yLerp) { //if x is closer to the edge than y
+				onScreenSpace.x = minX;
+				Debug.Log("x floored");
+			}
+			else {
+				onScreenSpace.y = minY;
+				Debug.Log("y ceilinged");
+			}
+		}
+		else if (xLerp < 0.5f && yLerp > 0.5f) { //quadrant two top left
+			Debug.Log("x and y top left");
+			if (xLerp < (1 - yLerp)) { //if x is closer to the edge than y
+				onScreenSpace.x = minX;
+				Debug.Log("x floored");
+			}
+			else {
+				onScreenSpace.y = maxY;
+				Debug.Log("y ceilinged");
+			}
+		}
+		else if (xLerp > 0.5f && yLerp > 0.5f) { //quadrant three top right
+			Debug.Log("x and y top right");
+			if ((1 - xLerp) < (1 - yLerp)) { //if x is closer to the edge than y
+				onScreenSpace.x = maxX;
+				Debug.Log("x ceilinged");
+			}
+			else {
+				onScreenSpace.y = maxY;
+				Debug.Log("y ceilinged");
+			}
+		}
+		else if (xLerp > 0.5f && yLerp < 0.5f) { //quadrant four bottom right
+			Debug.Log("x and y bottom right");
+			if ((1 - xLerp) < yLerp) { //if x is closer to the edge than y
+				onScreenSpace.x = maxX;
+				Debug.Log("x ceilinged");
+			}
+			else {
+				onScreenSpace.y = minY;
+				Debug.Log("y floored");
+			}
+		}
+		return onScreenSpace;
 	}
 
 	private void LoadSpaceIntroQuests() {
