@@ -3,6 +3,10 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2017
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Horse-Racing-Simulator-2019", "Horse-Racing-Simulator-2019.csproj", "{89DB1460-F28D-5FC0-192B-1DE8548F1129}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Horse-Racing-Simulator-2019.Plugins", "Horse-Racing-Simulator-2019.Plugins.csproj", "{1806C34F-C5B3-AC32-CDA7-033A2D2FEDBA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Horse-Racing-Simulator-2019.Editor.Plugins", "Horse-Racing-Simulator-2019.Editor.Plugins.csproj", "{0776B78F-E688-03B4-7F2D-CE2489258023}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Horse-Racing-Simulator-2019.Editor", "Horse-Racing-Simulator-2019.Editor.csproj", "{67D38BE3-B4B5-21C2-6022-AD0B45DAE24A}"
 EndProject
 Global
@@ -15,6 +19,14 @@ Global
 		{89DB1460-F28D-5FC0-192B-1DE8548F1129}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{89DB1460-F28D-5FC0-192B-1DE8548F1129}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{89DB1460-F28D-5FC0-192B-1DE8548F1129}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1806C34F-C5B3-AC32-CDA7-033A2D2FEDBA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1806C34F-C5B3-AC32-CDA7-033A2D2FEDBA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1806C34F-C5B3-AC32-CDA7-033A2D2FEDBA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1806C34F-C5B3-AC32-CDA7-033A2D2FEDBA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0776B78F-E688-03B4-7F2D-CE2489258023}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0776B78F-E688-03B4-7F2D-CE2489258023}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0776B78F-E688-03B4-7F2D-CE2489258023}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0776B78F-E688-03B4-7F2D-CE2489258023}.Release|Any CPU.Build.0 = Release|Any CPU
 		{67D38BE3-B4B5-21C2-6022-AD0B45DAE24A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{67D38BE3-B4B5-21C2-6022-AD0B45DAE24A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{67D38BE3-B4B5-21C2-6022-AD0B45DAE24A}.Release|Any CPU.ActiveCfg = Release|Any CPU

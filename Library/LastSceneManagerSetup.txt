@@ -1,4 +1,4 @@
 sceneSetups:
-- path: Assets/Scenes/2 - Space Introduction.unity
+- path: Assets/Scenes/1 - Horse Race.unity
   isLoaded: 1
   isActive: 1
