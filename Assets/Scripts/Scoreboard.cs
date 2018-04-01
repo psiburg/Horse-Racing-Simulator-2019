@@ -10,18 +10,20 @@ public class Scoreboard : MonoBehaviour {
 	private int totalRacers = 8;
 	private int racerFields = 3;
 
-	public bool spaceLevel = false;
+	private bool spaceLevel = false;
 	// Use this for initialization
 	void Start () {
 		Scene level = SceneManager.GetActiveScene();
-		if (level.name == "2 - Space Introduction")
+		if (level.buildIndex == 2)
 			spaceLevel = true;
+
+		if (spaceLevel)
+			ZalgoText();
 	}
 
 	// Update is called once per frame
 	void Update () {
-		if (spaceLevel)
-			ZalgoText();
+
 	}
 
 	void ZalgoText() {

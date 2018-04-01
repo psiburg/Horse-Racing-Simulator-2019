@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class SpaceIntroQuestCompleter : MonoBehaviour {
 
@@ -98,12 +99,15 @@ public class SpaceIntroQuestCompleter : MonoBehaviour {
 		}
 		//seventh quest - player moves on to next level
 		else if (questList.GetCurrentQuest() == 6) {
-			if (wait == 0) {
-				questList.QuestObjective[questList.GetCurrentQuest()].Translate(player.transform.forward * 500 + new Vector3(0, 0, 200));
-				wait++;
-			}
+
 			if ((player.transform.position - questList.QuestObjective[questList.GetCurrentQuest()].position).magnitude < 25) {
 				questList.QuestObjective[questList.GetCurrentQuest()].GetComponent<LevelEnd>().enabled = true;
+				wait = 0;
+			}
+			wait++;
+			if (wait > 8f) {
+				Scene level = SceneManager.GetActiveScene();
+				SceneManager.LoadScene(level.buildIndex + 1);
 			}
 		}
 	}

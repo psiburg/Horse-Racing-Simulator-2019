@@ -14,28 +14,26 @@ public class QuestObjectives : MonoBehaviour {
 	private string[] QuestHeaderList = new string[7];			//quest titles
 	private string[] QuestObjectiveList = new string[7];		//quest text
 	public Transform[] QuestObjective = new Transform[7];		//quest marker (if applicable)
-	private int currentQuest = 4;								//currently active quest
+	private int currentQuest = 0;								//currently active quest
 	private int totalQuests;
 	private int lastFrameQuest = -1;							//compare and update quest text on completion
 	public Text QuestHeaderText;								//quest header text box
 	public Text QuestObjectiveText;								//quest objective text box
 	public RawImage QuestMarkerUI;
 	public Camera cam;
-	private Transform player;
 
 	// Use this for initialization
 	void Start () {
 		Scene level = SceneManager.GetActiveScene();
-		player = GameObject.FindGameObjectWithTag("Player").transform;
 		if (level.buildIndex == 1) {
 			//no quests planned for horse race
 		}
 		else if (level.buildIndex == 2) {
 			LoadSpaceIntroQuests();
-			Debug.Log("loaded space quests");
 		}
 		else if (level.buildIndex == 3) {
-
+			LoadSpaceTwoQuests();
+			Debug.Log("loaded space two");
 		}
 		else if (level.buildIndex == 4) {
 			//no quests planned for boss fight
@@ -68,11 +66,13 @@ public class QuestObjectives : MonoBehaviour {
 			Vector3 uiSpacePos = cam.WorldToScreenPoint(QuestObjective[currentQuest].position);
 
 			Vector3 vectCamToTarget = (QuestMarkerUI.transform.forward - Camera.main.transform.forward).normalized;
+			
+			/*
 			float dotProd = Vector2.Dot(vectCamToTarget, Camera.main.transform.position.normalized);
 			Debug.Log("dot product: " + dotProd);
 
 			Transform enemyTemp = QuestMarkerUI.transform;
-			//enemyTemp.rotation = Quaternion.LookRotation(Vector3.forward, Vector3.up);
+			enemyTemp.rotation = Quaternion.LookRotation(Vector3.forward, Vector3.up);
 			enemyTemp.SetPositionAndRotation(new Vector3(QuestMarkerUI.transform.position.x,
 											QuestMarkerUI.transform.position.y,
 											QuestMarkerUI.transform.position.z),
@@ -84,17 +84,13 @@ public class QuestObjectives : MonoBehaviour {
 											 Quaternion.identity);
 			Vector3 vectCamToTargetNoRotation = enemyTemp.localPosition - cameraTemp.localPosition;
 			Debug.Log(vectCamToTarget + " -> " + vectCamToTargetNoRotation);
+			*/
+
 			//move ui marker accordingly
 			if (QuestObjective[currentQuest].GetComponent<Renderer>().isVisible) {
 				QuestMarkerUI.transform.position = new Vector3(uiSpacePos.x, uiSpacePos.y + 20f, 0f);
 				//Debug.Log("on screen " + QuestMarkerUI.transform.position);
 			}
-			//else if (dotProd > 0) {
-			//	Vector2 flat = Vector3.Project(vectPlayerToTarget, player.forward);
-			//	flat.Normalize();
-			//	Debug.Log(flat.magnitude);
-			//	//QuestMarkerUI.transform.position = new Vector3(temp.x, temp.y + 20f, 0f);
-			//}
 			else {
 				Debug.Log("cam to target" + vectCamToTarget);
 				//	Vector3 vectPlayerToTarget = player.position - QuestMarkerUI.transform.position;
@@ -130,14 +126,18 @@ public class QuestObjectives : MonoBehaviour {
 													Mathf.Clamp(uiSpacePos.y, minY, maxY));
 				//Debug.Log("does uispace clamp? " + uiSpacePos); MUST BE DIRECTLY ASSIGNED TO GET CLAMPED
 				Debug.Log("enemy screenSpace preswap " + onScreenSpace);
-				onScreenSpace = new Vector2((maxX - onScreenSpace.x) + minX, (maxY - onScreenSpace.y) + minY);
-				//Mathf.Clamp(onScreenSpace.x, minX, maxX);
-				//Mathf.Clamp(onScreenSpace.y, minY, maxY);
-				Debug.Log("enemy screenSpace postswap " + onScreenSpace);
-				if (vectCamToTarget.z < 0 && //target behind us
-					((uiSpacePos.x > minX || uiSpacePos.x < maxX) ||  //X is neither min nor max
-					 (uiSpacePos.y > minY || uiSpacePos.y < maxY))) { //Y is neither min nor max
-					Debug.Log("snap called - " + onScreenSpace);
+
+				if ((onScreenSpace.x > minX && onScreenSpace.x < maxX) ||  //X is neither min nor max
+					 (onScreenSpace.y > minY && onScreenSpace.y < maxY)) { //Y is neither min nor max
+					//bool xx = (onScreenSpace.x > minX && onScreenSpace.x < maxX);
+					//bool yy = (onScreenSpace.y != minY && onScreenSpace.y != maxY);
+					//Debug.Log("x edge? " + xx);
+					//Debug.Log("y edge? " + yy);
+					//Debug.Log("y is " + onScreenSpace.y.ToString("0.00") + ", y min is " + 
+					//		  minY.ToString("0.00") + ", y max is " + maxY.ToString("0.00"));
+					Debug.Log("not touching an edge! snap called on coord " + onScreenSpace);
+					onScreenSpace = new Vector2((maxX - onScreenSpace.x) + minX, (maxY - onScreenSpace.y) + minY);
+					Debug.Log("enemy screenSpace postswap " + onScreenSpace);
 					onScreenSpace = SnapToClosestEdge(onScreenSpace, minX, maxX, minY, maxY);
 				}
 
@@ -171,7 +171,7 @@ public class QuestObjectives : MonoBehaviour {
 			}
 			else {
 				onScreenSpace.y = minY;
-				Debug.Log("y ceilinged");
+				Debug.Log("y floored");
 			}
 		}
 		else if (xLerp < 0.5f && yLerp > 0.5f) { //quadrant two top left
@@ -250,6 +250,23 @@ public class QuestObjectives : MonoBehaviour {
 		totalQuests = i + 1;
 	}
 
+	private void LoadSpaceTwoQuests() {
+
+		//first quest - go to marker
+		int i = 0;
+		QuestHeaderList[i] = "How2Fly";
+		QuestObjectiveList[i] = "Stay a while and listen.";
+
+		//second quest - kill the enemies
+		i++;
+		QuestHeaderList[i] = "How2Fly";
+		QuestObjectiveList[i] = "Stay a while and listen.";
+
+		//third quest - back to the marker
+		i++;
+		QuestHeaderList[i] = "How2Fly";
+		QuestObjectiveList[i] = "Stay a while and listen.";
+	}
 	public void NextQuest() {
 		currentQuest++;
 	}

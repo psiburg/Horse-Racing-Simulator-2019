@@ -30,7 +30,7 @@ public class EnemyShipAttack : MonoBehaviour {
 		Vector3 dirToTarget = transform.position - target.position;
 		float angle = Vector3.Angle(transform.forward, dirToTarget);
 
-		if (Mathf.Abs(angle) > 170 && Mathf.Abs(angle) < 190) {
+		if (Mathf.Abs(angle) > 173 && Mathf.Abs(angle) < 187) {
 			//Debug.DrawLine(transform.position, target.position, Color.red);
 			return true;
 		}
